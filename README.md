@@ -1,4 +1,4 @@
-2017/08/21 (Tsun-Yi Yang)
+## 2017/08/21 (Tsun-Yi Yang)
 + Fix relu problem
 + Add example convertion file form torch to caffe: convert.lua
 
