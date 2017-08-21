@@ -2,7 +2,14 @@
 + Fix relu problem
 + Add example convertion file form torch to caffe: convert.lua
 
+## How to convert torch model to caffe model?
+```
+Step.1
+Change the name inside convert.lua
 
+Step.2
+th convert.lua
+```
 
 # Mocha: Convert torch model to/from caffe model easily
 Caffe: load with Python.  
