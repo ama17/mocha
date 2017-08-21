@@ -13,8 +13,8 @@ from caffe import layers as L
 
 
 # Directory containing layer param and config file.
-PARAM_DIR = './param/'
-CONFIG_DIR = './config/'
+PARAM_DIR = './output/param/'
+CONFIG_DIR = './output/config/'
 
 
 def input_layer(layer_config):
@@ -160,7 +160,7 @@ def build_prototxt():
     dfs(graph, 0, False)
 
     # Save prototxt.
-    with open('cvt_net.prototxt', 'w') as f:
+    with open('./output/cvt_net.prototxt', 'w') as f:
         f.write(str(net.to_proto()))
         print('Saved!\n')
 
@@ -186,7 +186,7 @@ def fill_params():
     '''
     print('==> Filling layer params..')
 
-    net = caffe.Net('cvt_net.prototxt', caffe.TEST)
+    net = caffe.Net('./output/cvt_net.prototxt', caffe.TEST)
     for i in range(len(net.layers)):
         layer_name = net._layer_names[i]
         layer_type = net.layers[i].type
@@ -203,7 +203,7 @@ def fill_params():
         if layer_type == 'BatchNorm':
             net.params[layer_name][2].data[...] = 1.  # use_global_stats=true
 
-    net.save('cvt_net.caffemodel')
+    net.save('./output/cvt_net.caffemodel')
     print('Saved!')
 
 
