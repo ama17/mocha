@@ -1,5 +1,6 @@
 ## 2017/08/21 (Tsun-Yi Yang)
-+ Fix relu problem
++ Fix relu inconsistent top name problem
++ Add Tanh layer
 + Add example convertion file form torch to caffe: convert.lua
 
 ## How to convert torch model to caffe model?
