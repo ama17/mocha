@@ -144,6 +144,7 @@ function noparam_layer(layer, idx)
     -- Map torch layer type to caffe layer type and layer name.
     local layer_type_name = {
         ['nn.ReLU'] = {'ReLU', 'relu'..idx},
+        ['nn.Tanh'] = {'TanH', 'tanh'..idx},
         ['nn.View'] = {'Flatten', 'flatten'..idx},
         ['nn.SoftMax'] = {'Softmax', 'softmax'..idx},
     }
@@ -191,6 +192,7 @@ layerfn = {
     ['nn.Linear'] = linear_layer,
     ['nn.Dropout'] = dropout_layer,
     ['nn.ReLU'] = noparam_layer,
+    ['nn.Tanh'] = noparam_layer,
     ['nn.View'] = noparam_layer,
     ['nn.SoftMax'] = noparam_layer,
 }
