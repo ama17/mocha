@@ -8,7 +8,7 @@ os.environ['GLOG_minloglevel'] = '2'  # Hide caffe debug info.
 import json
 import caffe
 import numpy as np
-
+import sys
 from caffe import layers as L
 
 
@@ -110,12 +110,26 @@ def build_prototxt():
     num_nodes = graph.shape[0]
     marked = [False for i in range(num_nodes)]
 
-    def dfs(G, v):
+    
+    def dfs(G, v, pre_flag):
         marked[v] = True
+
+        if pre_flag is None:
+            pass
+        else:
+            pre_relu_flag = pre_flag
+        
         bottom_layer_name = net_config[v]['name']
+        #print(v)
+        #print(bottom_layer_name)
+        if v > 0:
+            pre_bottom_layer_name = net_config[v-1]['name']
+            #print(pre_bottom_layer_name)
         for w in range(num_nodes):
             if G[v][w] == 1 and not marked[w]:
                 layer_config = net_config[w]
+                print(layer_config)
+                print('--------------------')
                 layer_name = layer_config['name']
                 layer_type = layer_config['type']
 
@@ -123,13 +137,27 @@ def build_prototxt():
                 get_layer = layer_fn.get(layer_type)
                 if not get_layer:
                     raise TypeError('%s not supported yet!' % layer_type)
+                
+                #print(layer_type)
+                #print('BLN:%s'% bottom_layer_name)
+                #print(pre_relu_flag)
+                #if v>0:
+                #    print('PBLN:%s'% pre_bottom_layer_name)
 
-                layer = get_layer(layer_config, bottom_layer_name)
+                if pre_relu_flag == True:
+                    layer = get_layer(layer_config, pre_bottom_layer_name)
+                    pre_relu_flag = False
+                else:    
+                    layer = get_layer(layer_config, bottom_layer_name)
+                
+                if layer_type == 'ReLU':
+                    pre_relu_flag = True
+
                 net[layer_name] = layer
-                dfs(G, w)
+                dfs(G, w, pre_relu_flag)
 
     # DFS.
-    dfs(graph, 0)
+    dfs(graph, 0, False)
 
     # Save prototxt.
     with open('cvt_net.prototxt', 'w') as f:
