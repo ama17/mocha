@@ -48,6 +48,10 @@ def relu_layer(layer_config, bottom_name):
     '''For ReLU layer, top=bottom'''
     return L.ReLU(bottom=bottom_name, top=bottom_name, in_place=True)
 
+def tanh_layer(layer_config, bottom_name):
+    '''For ReLU layer, top=bottom'''
+    return L.TanH(bottom=bottom_name, top=bottom_name, in_place=True)
+
 def pool_layer(layer_config, bottom_name):
     pool_type = layer_config['pool_type']
     kW, kH = layer_config['kW'], layer_config['kH']
@@ -89,6 +93,7 @@ def build_prototxt():
         'BatchNorm': bn_layer,
         'Scale': scale_layer,
         'ReLU': relu_layer,
+        'TanH': tanh_layer,
         'Pooling': pool_layer,
         'Flatten': flatten_layer,
         'InnerProduct': linear_layer,
@@ -117,7 +122,7 @@ def build_prototxt():
         if pre_flag is None:
             pass
         else:
-            pre_relu_flag = pre_flag
+            pre_trans_flag = pre_flag
         
         bottom_layer_name = net_config[v]['name']
         #print(v)
@@ -140,21 +145,21 @@ def build_prototxt():
                 
                 #print(layer_type)
                 #print('BLN:%s'% bottom_layer_name)
-                #print(pre_relu_flag)
+                #print(pre_trans_flag)
                 #if v>0:
                 #    print('PBLN:%s'% pre_bottom_layer_name)
 
-                if pre_relu_flag == True:
+                if pre_trans_flag == True:
                     layer = get_layer(layer_config, pre_bottom_layer_name)
-                    pre_relu_flag = False
+                    pre_trans_flag = False
                 else:    
                     layer = get_layer(layer_config, bottom_layer_name)
                 
-                if layer_type == 'ReLU':
-                    pre_relu_flag = True
+                if layer_type == 'ReLU' or layer_type == 'TanH':
+                    pre_trans_flag = True
 
                 net[layer_name] = layer
-                dfs(G, w, pre_relu_flag)
+                dfs(G, w, pre_trans_flag)
 
     # DFS.
     dfs(graph, 0, False)
