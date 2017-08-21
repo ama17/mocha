@@ -11,9 +11,9 @@ npy4th = require 'npy4th';
 
 torch.setdefaulttensortype('torch.FloatTensor')
 
-
-PARAM_DIR = './param/'    -- Directory for saving layer param.
-CONFIG_DIR = './config/'  -- Directory for saving net config.
+os.execute('mkdir ./output')
+PARAM_DIR = './output/param/'    -- Directory for saving layer param.
+CONFIG_DIR = './output/config/'  -- Directory for saving net config.
 
 
 ---------------------------------------------------------------
